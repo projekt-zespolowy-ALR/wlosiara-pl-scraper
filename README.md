@@ -1,4 +1,4 @@
-# nodejs-app-template
+# wlosiara-pl-scraper
 
 This is a template for a Node.js TypeScript project.
 

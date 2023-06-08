@@ -1,8 +1,3 @@
-import {str} from "envalid";
-
-const appConfigSchema = {
-	OPTIONAL_HELLO_MESSAGE: str({default: "Hello World!"}),
-	// REQUIRED_HELLO_MESSAGE: str(),
-};
+const appConfigSchema = {};
 
 export default appConfigSchema;

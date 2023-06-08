@@ -1,7 +1,7 @@
 {
-	"name": "nodejs-app-template",
-	"version": "1.7.1",
-	"description": "Node.js app template",
+	"name": "wlosiara-pl-scraper",
+	"version": "0.0.0",
+	"description": "Scraper for wlosiara.pl",
 	"private": false,
 	"main": "./dist/src/main.js",
 	"scripts": {
@@ -26,14 +26,13 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Rafal-Majewski/nodejs-app-template.git"
+		"url": "git+https://github.com/projekt-zespolowy-ALR/wlosiara-pl-scraper.git"
 	},
-	"author": "Rafał Majewski",
-	"license": "CC0-1.0",
+	"license": "UNLICENSED",
 	"bugs": {
-		"url": "https://github.com/Rafal-Majewski/nodejs-app-template/issues"
+		"url": "https://github.com/projekt-zespolowy-ALR/wlosiara-pl-scraper/issues"
 	},
-	"homepage": "https://github.com/Rafal-Majewski/nodejs-app-template#readme",
+	"homepage": "https://github.com/projekt-zespolowy-ALR/wlosiara-pl-scraper#readme",
 	"devDependencies": {
 		"@types/node": "^18.15.11",
 		"@typescript-eslint/eslint-plugin": "^5.57.1",
