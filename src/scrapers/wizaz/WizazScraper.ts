@@ -1,13 +1,11 @@
-import puppeteer, {Browser, ElementHandle, Page} from "puppeteer";
+import puppeteer, {Browser, Page} from "puppeteer";
 import latinize from "latinize";
 import type {Scraper} from "../../scraper/Scraper.js";
 import type {Offer} from "../../types/Offer.js";
 import type {DataSource} from "../../types/DataSource.js";
 import type {Product} from "../../types/Product.js";
 import type {Ingredient} from "../../types/Ingredient.js";
-import type {Category} from "../../types/Category.js";
 import type {Brand} from "../../types/Brand.js";
-import {on} from "events";
 
 export class WizazScraper implements Scraper {
 	async scrape(onScraped: (offer: Offer) => void): Promise<void> {

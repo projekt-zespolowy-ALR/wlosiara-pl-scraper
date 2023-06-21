@@ -1,7 +1,6 @@
 .DS_Store
 node_modules/
 /build/
-/.svelte-kit/
 .env
 .env.*
 !.env.example
@@ -10,3 +9,4 @@ node_modules/
 /coverage/
 .vscode/
 /coverage_report/
+.idea/

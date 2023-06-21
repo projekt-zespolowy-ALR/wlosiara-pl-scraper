@@ -1,12 +1,12 @@
 import puppeteer from "puppeteer";
 
 export const createBrowser = async () => {
-    return await puppeteer.launch({
-        args: ["--no-sandbox", "--disable-setuid-sandbox"],
-        headless: false,
-        "ignoreHTTPSErrors": true
-    });
-}
+	return await puppeteer.launch({
+		args: ["--no-sandbox", "--disable-setuid-sandbox"],
+		headless: false,
+		"ignoreHTTPSErrors": true,
+	});
+};
 
 // const puppeteer = require("puppeteer");
 //
