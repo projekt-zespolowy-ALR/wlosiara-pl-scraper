@@ -7,11 +7,10 @@ import type {Product} from "../../types/Product.js";
 import type {Ingredient} from "../../types/Ingredient.js";
 import type {Category} from "../../types/Category.js";
 import type {Brand} from "../../types/Brand.js";
+import {on} from "events";
 
 export class WizazScraper implements Scraper {
 	async scrape(onScraped: (offer: Offer) => void): Promise<void> {
-		// const browser = await createBrowser();
-		// const client = new WizazClient(browser);
 		const browser: Browser = await this.createBrowserInstance();
 		const page: Page = await this.setUpScraping(browser, "https://www.wizaz.pl/kosmetyki/wlosy");
 		await page.waitForSelector("#main-wrapper");
@@ -19,20 +18,14 @@ export class WizazScraper implements Scraper {
 		const numberOfPages: number = await this.getNumberOfPages(page);
 		console.log(numberOfPages);
 		for (let i = 1; i <= numberOfPages; i++) {
-			await this.scrapePage(browser, page, i);
+			await this.scrapePage(onScraped, browser, page, i);
 			const randomTimeout = this.getRandomTimeout(20000, 100000);
 			await this.delay(randomTimeout);
 		}
 		await browser.close();
-		// get total nr of pages
-		// then loop through all pages
-		// for each page, get all offers and call onScraped
-		// if something goes wrong, log it and continue
-		// await browser.close();
 	}
 
 	getRandomTimeout(max: number, min: number): number {
-		// get a random number between 20 and 100
 		return Math.floor(Math.random() * (max - min + 1)) + min;
 	}
 
@@ -73,7 +66,12 @@ export class WizazScraper implements Scraper {
 		return parseInt(lastPageButton?.[0] ?? "1");
 	}
 
-	async scrapePage(browser: Browser, page: Page, pageNumber: number): Promise<void> {
+	async scrapePage(
+		onScraped: (offer: Offer) => void,
+		browser: Browser,
+		page: Page,
+		pageNumber: number
+	): Promise<void> {
 		if (pageNumber === 1) {
 			await page.goto("https://wizaz.pl/kosmetyki/wlosy");
 		} else {
@@ -93,12 +91,12 @@ export class WizazScraper implements Scraper {
 			const randomTimeout = this.getRandomTimeout(500, 5000);
 			await this.delay(randomTimeout);
 			const newPage = await browser.newPage();
-			await this.scrapeOffer(newPage, url!);
+			await this.scrapeOffer(onScraped, newPage, url!);
 			await newPage.close();
 		}
 	}
 
-	async scrapeOffer(page: Page, url: string): Promise<void> {
+	async scrapeOffer(onScraped: (offer: Offer) => void, page: Page, url: string): Promise<void> {
 		let dataObject: Offer = {} as Offer;
 		let productObject: Product = {} as Product;
 		let brandObject: Brand = {} as Brand;
@@ -154,7 +152,6 @@ export class WizazScraper implements Scraper {
 			return acc;
 		}, {});
 
-		console.log(data);
 		const category = data["Kategoria"] ?? null;
 		const brand = data["Marka"] ?? null;
 		const capacity = data["Pojemność"] ?? null;
@@ -162,10 +159,8 @@ export class WizazScraper implements Scraper {
 
 		if (price) {
 			const withoutCurrency = price.match(/(\d+(,|\.)\d+)/g)?.[0] ?? null;
-			console.log(withoutCurrency);
 			if (withoutCurrency?.match(/(,)/g)) {
 				const pricePLN = parseFloat(withoutCurrency.replace(/(,)/g, "."));
-				console.log("PRICE PLN: ", pricePLN);
 				dataObject.pricePln = pricePLN;
 			} else if (withoutCurrency?.match(/(\.)/g)) {
 				const pricePLN = parseFloat(withoutCurrency);
@@ -187,14 +182,12 @@ export class WizazScraper implements Scraper {
 			volume = null;
 			weight = null;
 		}
-		// skladniki
 		const ingredientList = await page.$$eval(
 			" div.properties-ingreedients > div.ingreedients > ul > li",
 			(elements) =>
 				elements.map((el) => el.textContent?.toLocaleLowerCase().trim().replace(/(,)/g, ""))
 		);
 
-		console.log(ingredientList);
 		productObject.slug = productSlugIdified;
 		const productNameArray = productSlug?.split(", ");
 		productObject.name = productNameArray?.slice(1).join(", ") ?? null;
@@ -231,21 +224,14 @@ export class WizazScraper implements Scraper {
 				productObject.ingredients = ingredientsArray;
 			}
 		}
-		console.log(productObject);
 
 		dataObject.referenceUrl = referenceUrl;
 		dataObject.dataSource = this.getDataSource();
 		dataObject.imageUrl = imageUrl;
 		dataObject.description = description;
 		dataObject.product = productObject;
-		console.log(
-			"------------------------------------------------------------------------------------"
-		);
-		console.log(JSON.stringify(dataObject));
 
-		console.log(
-			"------------------------------------------------------------------------------------"
-		);
+		onScraped(dataObject);
 	}
 
 	getDataSource(): DataSource {

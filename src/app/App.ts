@@ -10,7 +10,7 @@ export class App {
 	public async run(): Promise<void> {
 		for (const scraper of this.scrapers) {
 			await scraper.scrape((offer) => {
-				console.log(offer);
+				console.log(JSON.stringify(offer));
 			});
 		}
 	}
