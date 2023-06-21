@@ -10,7 +10,13 @@ export class App {
 	public async run(): Promise<void> {
 		for (const scraper of this.scrapers) {
 			await scraper.scrape((offer) => {
-				console.log(JSON.stringify(offer));
+				fetch("https://api.wlosiara.pl/products/v1/dump", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify(offer),
+				});
 			});
 		}
 	}
